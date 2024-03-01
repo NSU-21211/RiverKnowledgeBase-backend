@@ -1,0 +1,5 @@
+{
+  "cachedir": "./cache",
+  "connection": "postgis://${SPRING_DATASOURCE_USER}:${SPRING_DATASOURCE_PASSWORD}@river_knowledge_postgres/backend",
+  "srid": 3857
+}
