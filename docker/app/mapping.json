@@ -1,0 +1,14 @@
+{
+  "mapping": [
+    {
+      "type": "points",
+      "table": "points",
+      "columns": ["osm_id", "geometry"]
+    },
+    {
+      "type": "lines",
+      "table": "lines",
+      "columns": ["osm_id", "geometry"]
+    }
+  ]
+}

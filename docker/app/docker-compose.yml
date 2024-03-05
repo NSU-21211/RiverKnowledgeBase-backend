@@ -1,13 +1,31 @@
 version: '3'
 services:
-  dio_postgressql:
-    image: postgres:13
+  river_knowledge_postgres:
+    build:
+      context: postgres
+      dockerfile: Dockerfile
     volumes:
       - ../initdb:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRES_USER=${SPRING_DATASOURCE_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-postgres}
-      - POSTGRES_DB=river_knowledge_database
+      - POSTGRES_DB=backend
+      - POSTGRES_USER=${SPRING_DATASOURCE_USER}
+      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always
+
+  river_knowledge_osmosis:
+    build:
+      context: .
+      dockerfile: osm/Dockerfile
+
+    environment:
+      - POSTGRES_USER=${SPRING_DATASOURCE_USER}
+      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - POSTGRES_DB=backend
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - HOST_INFO=${HOST_INFO}
+      - RESULT_INFO_FILE={RESULT_INFO_FILE}
+    depends_on:
+      - river_knowledge_postgres
