@@ -1,14 +1,14 @@
-package nsu.ccfit.ru.upprpo.riverknowledge.services.impl;
+package nsu.ccfit.ru.upprpo.riverknowledge.service.impl;
 
 import com.bordercloud.sparql.SparqlClient;
 import com.bordercloud.sparql.SparqlClientException;
 import com.bordercloud.sparql.SparqlResult;
 import com.bordercloud.sparql.SparqlResultModel;
 import lombok.extern.slf4j.Slf4j;
-import nsu.ccfit.ru.upprpo.riverknowledge.models.entity.RiverEntity;
-import nsu.ccfit.ru.upprpo.riverknowledge.models.query.RiverQuery;
-import nsu.ccfit.ru.upprpo.riverknowledge.models.response.ResponseParser;
-import nsu.ccfit.ru.upprpo.riverknowledge.services.RiverService;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.query.RiverQuery;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.response.ResponseParser;
+import nsu.ccfit.ru.upprpo.riverknowledge.service.RiverService;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;

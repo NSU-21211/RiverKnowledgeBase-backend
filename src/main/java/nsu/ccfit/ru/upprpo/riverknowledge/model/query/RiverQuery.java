@@ -1,4 +1,4 @@
-package nsu.ccfit.ru.upprpo.riverknowledge.models.query;
+package nsu.ccfit.ru.upprpo.riverknowledge.model.query;
 
 public class RiverQuery {
     private RiverQuery() {
@@ -6,6 +6,7 @@ public class RiverQuery {
     }
 
     public static String getRiverQuery(String name) {
+        // TODO: разделить запрос, 2 варианта: 2 запроса в виде получения реки, а после притоков. Нынешний запрос с парсом притоков
         return "SELECT ?river ?label ?coordinateLocation ?length ?tributary ?image\n" +
                 "WHERE\n" +
                 "{\n" +

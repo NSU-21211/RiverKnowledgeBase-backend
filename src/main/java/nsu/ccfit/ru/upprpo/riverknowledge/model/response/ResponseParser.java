@@ -1,7 +1,7 @@
-package nsu.ccfit.ru.upprpo.riverknowledge.models.response;
+package nsu.ccfit.ru.upprpo.riverknowledge.model.response;
 
 import com.bordercloud.sparql.SparqlResultModel;
-import nsu.ccfit.ru.upprpo.riverknowledge.models.entity.RiverEntity;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
 
 import java.net.URI;
 import java.util.ArrayList;

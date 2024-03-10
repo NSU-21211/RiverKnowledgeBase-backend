@@ -1,4 +1,4 @@
-package nsu.ccfit.ru.upprpo.riverknowledge.models.entity;
+package nsu.ccfit.ru.upprpo.riverknowledge.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
