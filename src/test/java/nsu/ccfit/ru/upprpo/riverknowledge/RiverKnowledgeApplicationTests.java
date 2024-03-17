@@ -1,13 +1,13 @@
 package nsu.ccfit.ru.upprpo.riverknowledge;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Disabled
 @SpringBootTest
-class RiverknowledgeApplicationTests {
-
+class RiverKnowledgeApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

@@ -2,11 +2,11 @@ package nsu.ccfit.ru.upprpo.riverknowledge.controller;
 
 import lombok.RequiredArgsConstructor;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverName;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.geojson.result.GeoServiceResult;
 import nsu.ccfit.ru.upprpo.riverknowledge.service.RiverService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import nsu.ccfit.ru.upprpo.riverknowledge.service.geojson.GeoFeaturesService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,10 +15,15 @@ import java.util.List;
 @RequestMapping("/api/river/")
 public class RiverController {
     private final RiverService riverService;
+    private final GeoFeaturesService geoFeaturesService;
 
-    @GetMapping("/search")
-    public List<RiverEntity> getRivers(@RequestParam(name = "river") String name) {
-        return riverService.getRiver(name);
+    @GetMapping("search")
+    public List<RiverEntity> getRivers(@RequestBody RiverName riverName) {
+        return riverService.getRiver(riverName.getName());
     }
 
+    @GetMapping("geo/info")
+    public GeoServiceResult getRiverGeoInfo(@RequestBody RiverName riverName) {
+        return geoFeaturesService.getRiverInfoFromGeoJson(riverName.getName());
+    }
 }

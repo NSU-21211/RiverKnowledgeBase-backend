@@ -48,6 +48,16 @@ dependencies {
 
 	/* SPARQL */
 	implementation 'com.bordercloud:SPARQL-JAVA:1.1.1'
+
+	/* Tests */
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	/* JUnit5 */
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion"
+
+	/* JTS core */
+	implementation "org.locationtech.jts:jts-core:$jtsVersion"
 }
 
 tasks.named('test') {

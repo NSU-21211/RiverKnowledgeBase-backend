@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RiverknowledgeApplication {
+public class RiverKnowledgeApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(RiverknowledgeApplication.class, args);
+		SpringApplication.run(RiverKnowledgeApplication.class, args);
 	}
 }
