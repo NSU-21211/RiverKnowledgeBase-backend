@@ -37,8 +37,6 @@ public class RiverServiceImpl implements RiverService {
                 parser.parseRiverInfo(resultModel, rivers);
 
                 getRiverTributaries(name);
-
-
             } else {
                 log.warn("Нет информации для реки " + name);
             }
