@@ -37,3 +37,7 @@ out/
 
 ### MAC OS ###
 *.DS_Store
+
+# Other
+.env
+**/examples
