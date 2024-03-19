@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -66,6 +67,13 @@ public class RiverServiceImpl implements RiverService {
             log.error("Ошибка при выполнении запроса SPARQL: {}", exception.getLocalizedMessage());
             throw new RuntimeException(exception);
         }
+    }
+
+    @Override
+    public Optional<RiverEntity> getRiverByName(String name) {
+        return rivers.values().stream()
+                .filter(river -> river.getLabel().equals(name))
+                .findFirst();
     }
 
 }
