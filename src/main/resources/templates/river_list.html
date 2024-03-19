@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="RU">
+<head>
+    <meta charset="UTF-8">
+    <title>Список рек</title>
+</head>
+<body>
+<div class="container">
+    <h1>Список рек</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Административная территория</th>
+            <th>Длина</th>
+            <th>Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="river : ${riverDTOmap}">
+            <td th:text="${river.value.getLabel()}"></td>
+            <td>
+                <ul>
+                    <li th:each="territory : ${river.value.getAdministrativeTerritorial()}" th:text="${territory}"></li>
+                </ul>
+            </td>
+            <td th:text="${river.value.getLength()}"></td>
+            <td><a th:href="@{/api/river/get(river=${river.value.getLabel()})}">Получить подробную информацию</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
