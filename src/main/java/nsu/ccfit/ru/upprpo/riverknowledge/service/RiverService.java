@@ -10,5 +10,6 @@ public interface RiverService {
     Map<URI, RiverEntity> getRiverInfo(String name);
 
     void getRiverTributaries(String name);
+
     Optional<RiverEntity> getRiverByName(String name);
 }
