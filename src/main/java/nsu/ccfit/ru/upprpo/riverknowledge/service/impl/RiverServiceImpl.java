@@ -4,69 +4,103 @@ import com.bordercloud.sparql.SparqlClient;
 import com.bordercloud.sparql.SparqlClientException;
 import com.bordercloud.sparql.SparqlResult;
 import com.bordercloud.sparql.SparqlResultModel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
-import nsu.ccfit.ru.upprpo.riverknowledge.model.query.RiverInfoQuery;
-import nsu.ccfit.ru.upprpo.riverknowledge.model.query.RiverTributariesQuery;
-import nsu.ccfit.ru.upprpo.riverknowledge.model.response.ResponseParser;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.WikidataResponseParser;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.impl.URIAndLabelParser;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.impl.RiverURIAndLabelQuery;
 import nsu.ccfit.ru.upprpo.riverknowledge.service.RiverService;
+import nsu.ccfit.ru.upprpo.riverknowledge.util.RiverPairKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RiverServiceImpl implements RiverService {
-    private static final String WIKIDATA_ENDPOINT = "https://query.wikidata.org/sparql";
+
     private final SparqlClient client = new SparqlClient(false);
-    private final ResponseParser parser = new ResponseParser();
-    private final Map<URI, RiverEntity> rivers = new HashMap<>();
+    private final Map<RiverPairKey, RiverEntity> rivers = new ConcurrentHashMap<>();
+    private final List<WikidataQuery> wikidataQueryList;
+    private final List<WikidataResponseParser> parserList;
+
+    @Value(value = "${wikidata.endpoint}")
+    private String wikidataEndpoint;
 
     @Override
-    public Map<URI, RiverEntity> getRiverInfo(String name) {
-        String querySelect = RiverInfoQuery.getRiverQuery(name);
-        client.setEndpointRead(URI.create(WIKIDATA_ENDPOINT));
-        try {
-            SparqlResult result = client.query(querySelect);
-            log.info("Запрос на получение информации для реки " + name + " выполнен.");
+    public Map<RiverPairKey, RiverEntity> getRiverInfo(String name) {
+        client.setEndpointRead(URI.create(wikidataEndpoint));
+        riverLabelAndURIQuery(name);
 
-            SparqlResultModel resultModel = result.getModel();
-            if (resultModel.getRowCount() > 0) {
-                parser.parseRiverInfo(resultModel, rivers);
+        for (WikidataQuery wikidataQuery : wikidataQueryList) {
+            String querySelect = wikidataQuery.getWikidataQuery(name);
 
-                getRiverTributaries(name);
-            } else {
-                log.warn("Нет информации для реки " + name);
-            }
-        } catch (SparqlClientException exception) {
-            log.error("Ошибка при выполнении запроса SPARQL: {}", exception.getLocalizedMessage());
-            throw new RuntimeException(exception);
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    return client.query(querySelect);
+                } catch (SparqlClientException e) {
+                    log.error("Error executing request SPARQL for " + wikidataQuery.getType() + ": {}", e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            }).thenAccept(result -> {
+                SparqlResultModel resultModel = result.getModel();
+                log.info("Query " + wikidataQuery.getType() + " for river " + name + " done. Row count = " + resultModel.getRowCount());
+
+                if (resultModel.getRowCount() > 0) {
+                    Optional<WikidataResponseParser> parser = getParserByType(wikidataQuery.getType());
+                    if (parser.isPresent()) {
+                        parser.get().parse(resultModel, rivers);
+                        log.info(parser.get().getType() + " parse has finished. Rivers size = " + rivers.size());
+                    } else {
+                        log.error("No parser for " + wikidataQuery.getType() + " query");
+                    }
+                } else {
+                    log.warn("No information for river " + name);
+                }
+
+            });
+
         }
 
         return rivers;
     }
 
-    @Override
-    public void getRiverTributaries(String name) {
-        String querySelect = RiverTributariesQuery.getRiverTributariesQuery(name);
+    private void riverLabelAndURIQuery(String riverName) {
+        RiverURIAndLabelQuery query = new RiverURIAndLabelQuery();
+        String querySelect = query.getWikidataQuery(riverName);
 
         try {
             SparqlResult result = client.query(querySelect);
-            log.info("Запрос на получение притоков для реки " + name + " выполнен.");
-
             SparqlResultModel resultModel = result.getModel();
+            log.info("Query " + query.getType() + " for river " + riverName + " done. Row count = " + resultModel.getRowCount());
+
             if (resultModel.getRowCount() > 0) {
-                parser.parseRiverTributaries(resultModel, rivers);
+                URIAndLabelParser parser = new URIAndLabelParser();
+                parser.parse(resultModel, rivers);
+                log.info(parser.getType() + " parse has finished. Rivers size = " + rivers.size());
             } else {
-                log.warn("Нет притоков для реки " + name);
+                log.warn("No information for river " + riverName);
             }
-        } catch (SparqlClientException exception) {
-            log.error("Ошибка при выполнении запроса SPARQL: {}", exception.getLocalizedMessage());
-            throw new RuntimeException(exception);
+        } catch (SparqlClientException e) {
+            log.error("Error executing request SPARQL: {}", (Object) e.getSuppressed());
+            throw new RuntimeException(e);
         }
+
+    }
+
+    private Optional<WikidataResponseParser> getParserByType(String type) {
+        return parserList.stream()
+                .filter(parser -> parser.getType().equals(type))
+                .findFirst();
     }
 
     @Override
