@@ -4,26 +4,32 @@ import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RiverLegnthWikidataQuery implements WikidataQuery {
+public class ImageAndTributariesWikidataQuery implements WikidataQuery {
+
+    @Override
     public String getWikidataQuery(String name) {
         return String.format("""
-                SELECT DISTINCT ?river ?label ?length
+                SELECT ?river ?label (group_concat(?tributaryLabel;separator="/") as ?tributaries) ?image
                 WHERE {
                   ?river wdt:P31 wd:Q4022;
                          wdt:P17 wd:Q159;
-                         rdfs:label ?label.
+                         rdfs:label ?label;
+                         wdt:P974 ?tributary.
                   FILTER (STRSTARTS(?label, "%s")).
                   OPTIONAL {
-                    ?river wdt:P2043 ?length.
+                    ?river wdt:P974 ?tributary.
+                    ?river wdt:P18 ?image.
                   }
                   SERVICE wikibase:label {
                     bd:serviceParam wikibase:language "ru,en".
+                    ?tributary rdfs:label ?tributaryLabel.
                   }
-                }""", name);
+                } GROUP BY ?river ?label ?image having(count(?tributary) > 0)""", name);
     }
 
     @Override
     public String getType() {
-        return "length";
+        return "image-tributaries";
     }
+
 }

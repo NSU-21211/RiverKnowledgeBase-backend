@@ -4,29 +4,29 @@ import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RiverTributariesWikidataQuery implements WikidataQuery {
-
+public class CountryAndMouthWikidataQuery implements WikidataQuery {
+    @Override
     public String getWikidataQuery(String name) {
         return String.format("""
-                SELECT ?river ?label (group_concat(?tributaryLabel;separator="/") as ?tributaries)
+                SELECT ?river ?label (group_concat(?mouthLabel; separator="/") as ?mouths) ?countryLabel
                 WHERE {
                   ?river wdt:P31 wd:Q4022;
                          wdt:P17 wd:Q159;
                          rdfs:label ?label;
-                         wdt:P974 ?tributary.
+                         wdt:P403 ?mouth;
+                         wdt:P17 ?country.
                   FILTER (STRSTARTS(?label, "%s")).
-                  OPTIONAL {
-                    ?river wdt:P974 ?tributary.
-                  }
                   SERVICE wikibase:label {
                     bd:serviceParam wikibase:language "ru,en".
-                    ?tributary rdfs:label ?tributaryLabel.
+                    ?mouth rdfs:label ?mouthLabel.
+                    ?country rdfs:label ?countryLabel.
                   }
-                } GROUP BY ?river ?label having(count(?tributary) > 1)""", name);
+                } GROUP BY ?river ?label ?countryLabel HAVING (COUNT(?mouth) > 0)""", name);
     }
 
     @Override
     public String getType() {
-        return "tributaries";
+        return "country-mouth";
     }
+
 }

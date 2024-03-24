@@ -7,22 +7,30 @@ import nsu.ccfit.ru.upprpo.riverknowledge.util.RiverPairKey;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 @Component
-public class AdministrativeTerritorialParser implements WikidataResponseParser {
+public class CountryAndMouthParser implements WikidataResponseParser {
+    @Override
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
             URI riverLink = URI.create(String.valueOf(resultModel.getRows().get(i).get("river")));
             String riverLabel = String.valueOf(resultModel.getRows().get(i).get("label"));
-            RiverPairKey key = new RiverPairKey(riverLink, riverLabel);
+            String country = String.valueOf(resultModel.getRows().get(i).get("countryLabel"));
+            String modelMouths = String.valueOf(resultModel.getRows().get(i).get("mouths"));
 
-            rivers.get(key).getAdministrativeTerritorial().add(String.valueOf(resultModel.getRows().get(i).get("locatedLabel")));
+            String[] mouths = modelMouths.split("/");
+            RiverPairKey key = new RiverPairKey(riverLink, riverLabel);
+            rivers.get(key).setCountry(country);
+            rivers.get(key).setMouth(new HashSet<>(List.of(mouths)));
         }
     }
 
     @Override
     public String getType() {
-        return "administrativeTerritorial";
+        return "country-mouth";
     }
+
 }

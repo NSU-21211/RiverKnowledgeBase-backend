@@ -1,9 +1,7 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.service.impl;
 
-import com.bordercloud.sparql.SparqlClient;
-import com.bordercloud.sparql.SparqlClientException;
-import com.bordercloud.sparql.SparqlResult;
-import com.bordercloud.sparql.SparqlResultModel;
+import com.bordercloud.sparql.*;
+import com.bordercloud.sparql.authorization.AuthorizationSettings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
@@ -28,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class RiverServiceImpl implements RiverService {
 
-    private final SparqlClient client = new SparqlClient(false);
+    private final SparqlClient client = new SparqlClient(true);
     private final Map<RiverPairKey, RiverEntity> rivers = new ConcurrentHashMap<>();
     private final List<WikidataQuery> wikidataQueryList;
     private final List<WikidataResponseParser> parserList;
@@ -39,6 +37,8 @@ public class RiverServiceImpl implements RiverService {
     @Override
     public Map<RiverPairKey, RiverEntity> getRiverInfo(String name) {
         client.setEndpointRead(URI.create(wikidataEndpoint));
+        client.setMethodHTTPRead(Method.GET);
+
         riverLabelAndURIQuery(name);
 
         for (WikidataQuery wikidataQuery : wikidataQueryList) {
@@ -49,6 +49,7 @@ public class RiverServiceImpl implements RiverService {
                     return client.query(querySelect);
                 } catch (SparqlClientException e) {
                     log.error("Error executing request SPARQL for " + wikidataQuery.getType() + ": {}", e.getMessage());
+                    e.printStackTrace();
                     throw new RuntimeException(e);
                 }
             }).thenAccept(result -> {
