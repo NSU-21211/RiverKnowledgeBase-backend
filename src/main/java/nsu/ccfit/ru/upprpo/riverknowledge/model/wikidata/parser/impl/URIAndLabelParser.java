@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.Map;
 
 public class URIAndLabelParser implements WikidataResponseParser {
+
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
             URI riverLink = URI.create(String.valueOf(resultModel.getRows().get(i).get("river")));
@@ -29,4 +30,5 @@ public class URIAndLabelParser implements WikidataResponseParser {
     public String getType() {
         return "uri-label";
     }
+
 }

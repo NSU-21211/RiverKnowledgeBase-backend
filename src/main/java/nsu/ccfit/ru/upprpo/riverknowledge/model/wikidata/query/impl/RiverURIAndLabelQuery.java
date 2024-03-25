@@ -21,4 +21,5 @@ public class RiverURIAndLabelQuery implements WikidataQuery {
     public String getType() {
         return "uri-label";
     }
+
 }

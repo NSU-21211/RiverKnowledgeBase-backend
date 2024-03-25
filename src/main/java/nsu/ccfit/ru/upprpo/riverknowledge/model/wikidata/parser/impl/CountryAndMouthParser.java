@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Component
 public class CountryAndMouthParser implements WikidataResponseParser {
+
     @Override
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {

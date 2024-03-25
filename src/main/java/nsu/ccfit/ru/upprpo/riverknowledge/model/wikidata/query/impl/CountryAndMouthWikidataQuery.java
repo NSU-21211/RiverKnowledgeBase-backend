@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CountryAndMouthWikidataQuery implements WikidataQuery {
+
     @Override
     public String getWikidataQuery(String name) {
         return String.format("""

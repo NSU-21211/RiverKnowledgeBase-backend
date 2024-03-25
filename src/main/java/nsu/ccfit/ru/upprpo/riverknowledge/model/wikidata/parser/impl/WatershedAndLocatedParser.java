@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Component
 public class WatershedAndLocatedParser implements WikidataResponseParser {
+
     @Override
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
@@ -32,4 +33,5 @@ public class WatershedAndLocatedParser implements WikidataResponseParser {
     public String getType() {
         return "watershed-located";
     }
+
 }

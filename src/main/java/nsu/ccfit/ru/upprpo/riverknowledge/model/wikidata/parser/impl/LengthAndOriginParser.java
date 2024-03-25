@@ -16,7 +16,7 @@ public class LengthAndOriginParser implements WikidataResponseParser {
 
     @Override
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
-        for(int i = 0; i < resultModel.getRowCount(); ++i) {
+        for (int i = 0; i < resultModel.getRowCount(); ++i) {
             URI riverLink = URI.create(String.valueOf(resultModel.getRows().get(i).get("river")));
             String riverLabel = String.valueOf(resultModel.getRows().get(i).get("label"));
             Integer length = Integer.valueOf(String.valueOf(resultModel.getRows().get(i).get("length")));
