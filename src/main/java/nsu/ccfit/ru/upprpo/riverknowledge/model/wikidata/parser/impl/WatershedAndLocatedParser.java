@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class WatershedAndLocatedParser implements WikidataResponseParser {
@@ -19,7 +20,7 @@ public class WatershedAndLocatedParser implements WikidataResponseParser {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
             URI riverLink = URI.create(String.valueOf(resultModel.getRows().get(i).get("river")));
             String riverLabel = String.valueOf(resultModel.getRows().get(i).get("label"));
-            Integer watershedArea = Integer.valueOf(String.valueOf(resultModel.getRows().get(i).get("watershed")));
+            Integer watershedArea = Integer.valueOf(Optional.ofNullable(String.valueOf(resultModel.getRows().get(i).get("watershed"))).orElse("0"));
             String modelTerritorials = String.valueOf(resultModel.getRows().get(i).get("locates"));
 
             String[] territorials = modelTerritorials.split("/");

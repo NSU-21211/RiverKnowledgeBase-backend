@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version "$springBootVersion"
 	id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
+	id 'org.springdoc.openapi-gradle-plugin' version "$openAPIVersion"
 }
 
 group = 'nsu.ccfit.ru.upprpo'
@@ -64,6 +65,9 @@ dependencies {
 
 	/* JTS core */
 	implementation "org.locationtech.jts:jts-core:$jtsVersion"
+
+	/*s pringdoc-openapi */
+
 }
 
 tasks.named('test') {

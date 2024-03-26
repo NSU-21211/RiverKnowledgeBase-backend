@@ -1,6 +1,8 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.service.query.impl;
 
 import com.bordercloud.sparql.*;
+import com.bordercloud.sparql.authorization.basic.HTTPBasicAuthSettings;
+import com.bordercloud.sparql.authorization.oauth2.OAuth2PasswordGrantSettings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
@@ -20,25 +22,28 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class QueryServiceImpl implements QueryService {
-    private final SparqlClient client = new SparqlClient(true);
     private final List<WikidataResponseParser> parserList;
 
     @Value(value = "${wikidata.endpoint}")
     private String wikidataEndpoint;
 
+    private final ThreadLocal<SparqlClient> client = ThreadLocal.withInitial(() -> {
+        SparqlClient sparqlClient = new SparqlClient(true);
+        sparqlClient.setEndpointRead(URI.create(wikidataEndpoint));
+        return sparqlClient;
+    });
+
+
     @Override
     public void riverLabelAndURIQuery(String name, Map<RiverPairKey, RiverEntity> rivers) {
-        client.setEndpointRead(URI.create(wikidataEndpoint));
-        client.setMethodHTTPRead(Method.GET);
-
         RiverURIAndLabelQuery query = new RiverURIAndLabelQuery();
         String querySelect = query.getWikidataQuery(name);
 
         try {
-            SparqlResult result = client.query(querySelect);
+            SparqlResult result = client.get().query(querySelect);
             SparqlResultModel resultModel = result.getModel();
             log.info("Query " + query.getType() + " for river " + name + " done. Row count = " + resultModel.getRowCount());
 
@@ -61,7 +66,7 @@ public class QueryServiceImpl implements QueryService {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return client.query(querySelect);
+                return client.get().query(querySelect);
             } catch (SparqlClientException e) {
                 log.error("Error executing request SPARQL for " + query.getType() + ": {}", e.getMessage());
                 e.printStackTrace();

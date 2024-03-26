@@ -1,5 +1,7 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "River controller", description = "Эндпоинты для получения рек")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/river")
@@ -25,18 +28,30 @@ public class RiverController {
     private final RiverService riverService;
     private final GeoFeaturesService geoFeaturesService;
 
+    @Operation(
+            summary = "Получение списка рек",
+            description = "Проверяет введёное название реки и при успехе отправляет запрос. Ответом является список DTO"
+    )
     @GetMapping("/search/{name}")
     public List<RiverDTO> getRivers(@PathVariable(value = "name")
                                     @NotNull @NotBlank @Length(min = 2) String riverName) {
         return riverService.getRiverInfo(riverName);
     }
 
+    @Operation(
+            summary = "Получение подробной информации конкретной реки",
+            description = "Проверяет назавние реки и при успехе отображает полную информацию о реке"
+    )
     @GetMapping("/get/{name}")
     public Optional<RiverEntity> getRiver(@PathVariable(value = "name")
                                           @NotNull @NotBlank @Length(min = 2) String riverName) {
         return riverService.getRiverByName(riverName);
     }
 
+    @Operation(
+            summary = "Получение геометрической информации об указанной реке",
+            description = "Валидирует переданное название и посылает overpass запрос на получение geojson, после преобразует её"
+    )
     @GetMapping("geo/info/{name}")
     public GeoServiceResult getRiverGeoInfo(@PathVariable(value = "name")
                                             @NotNull @NotBlank @Length(min = 2) String riverName) {
