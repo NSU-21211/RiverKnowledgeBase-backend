@@ -52,7 +52,7 @@ public class QueryServiceImpl implements QueryService {
                 parser.parse(resultModel, rivers);
                 log.info(parser.getType() + " parse has finished. Rivers size = " + rivers.size());
             } else {
-                log.warn("No information for river " + name);
+                log.warn("No information query" + query.getType() + " river " + name);
             }
         } catch (SparqlClientException e) {
             log.error("Error executing request SPARQL: {}", (Object) e.getSuppressed());
@@ -81,11 +81,12 @@ public class QueryServiceImpl implements QueryService {
                 if (parser.isPresent()) {
                     parser.get().parse(resultModel, rivers);
                     log.info(parser.get().getType() + " parse has finished. Rivers size = " + rivers.size());
+                    client.remove();
                 } else {
                     log.error("No parser for " + query.getType() + " query");
                 }
             } else {
-                log.warn("No information for river " + name);
+                log.warn("No information query" + query.getType() + " river " + name);
             }
         });
     }
