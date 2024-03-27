@@ -11,6 +11,7 @@ import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.geojson.result.GeoService
 import nsu.ccfit.ru.upprpo.riverknowledge.service.geojson.GeoFeaturesService;
 import nsu.ccfit.ru.upprpo.riverknowledge.service.river.RiverService;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,7 @@ import java.util.Optional;
 @Tag(name = "River controller", description = "Эндпоинты для получения рек")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/river")
-//@RequestMapping(value = "/api/river/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/river/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RiverController {
     private final RiverService riverService;
     private final GeoFeaturesService geoFeaturesService;
