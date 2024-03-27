@@ -10,7 +10,6 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class LengthAndOriginParser implements WikidataResponseParser {
@@ -20,7 +19,10 @@ public class LengthAndOriginParser implements WikidataResponseParser {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
             URI riverLink = URI.create(String.valueOf(resultModel.getRows().get(i).get("river")));
             String riverLabel = String.valueOf(resultModel.getRows().get(i).get("label"));
-            Integer length = Optional.of(Integer.valueOf(String.valueOf(resultModel.getRows().get(i).get("length")))).orElse(0);
+
+            String modelLength = String.valueOf(resultModel.getRows().get(i).get("length"));
+            Integer length = modelLength.equals("null") ? 0 : Integer.parseInt(modelLength);
+
             String modelOrigins = String.valueOf(resultModel.getRows().get(i).get("origins"));
 
             String[] origins = modelOrigins.split("/");
