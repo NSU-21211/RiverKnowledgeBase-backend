@@ -3,6 +3,7 @@ package nsu.ccfit.ru.upprpo.riverknowledge.model.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.net.URI;
@@ -12,41 +13,36 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RiverEntity {
     @Schema(description = "Ссылка на объект из wikidata")
-    URI riverLink;
+    private URI riverLink;
 
     @Schema(description = "Название реки")
-    String label;
+    private String label;
 
     @Schema(description = "Длина реки")
-    Integer length;
+    private Integer length;
 
     @Schema(description = "Площадь бассейна")
-    Integer watershedArea;
+    private Integer watershedArea;
 
     @Schema(description = "Изображение реки")
-    URI image;
+    private URI image;
 
     @Schema(description = "Основные источники реки")
-    Set<String> origin;
+    private Set<String> origin = new HashSet<>();
 
     @Schema(description = "Административно-территориальные единицы на территории которых расположен данный элемент")
-    Set<String> administrativeTerritorial;
+    private Set<String> administrativeTerritorial = new HashSet<>();
 
     @Schema(description = "Притоки")
-    Set<String> tributaries;
+    private Set<String> tributaries = new HashSet<>();
 
     @Schema(description = "Гидрологические объекты, в который впадает река")
-    Set<String> mouth;
+    private Set<String> mouth = new HashSet<>();
 
     @Schema(description = "Страна")
-    String country;
+    private String country;
 
-    public RiverEntity() {
-        this.origin = new HashSet<>();
-        this.administrativeTerritorial = new HashSet<>();
-        this.tributaries = new HashSet<>();
-        this.mouth = new HashSet<>();
-    }
 }
