@@ -1,8 +1,13 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.impl;
 
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
+import org.springframework.beans.factory.annotation.Value;
 
-public class RiverURIAndLabelQuery implements WikidataQuery {
+public class URIAndLabelWikidataQuery implements WikidataQuery {
+
+    @Value(value = "${wikidata.uri.and.label.type}")
+    private String queryType;
+
     public String getWikidataQuery(String name) {
         return String.format("""
                 SELECT DISTINCT ?river ?label
@@ -19,7 +24,7 @@ public class RiverURIAndLabelQuery implements WikidataQuery {
 
     @Override
     public String getType() {
-        return "uri-label";
+        return queryType;
     }
 
 }

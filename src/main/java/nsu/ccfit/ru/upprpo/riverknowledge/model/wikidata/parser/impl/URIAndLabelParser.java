@@ -4,11 +4,15 @@ import com.bordercloud.sparql.SparqlResultModel;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.WikidataResponseParser;
 import nsu.ccfit.ru.upprpo.riverknowledge.util.RiverPairKey;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 import java.util.Map;
 
 public class URIAndLabelParser implements WikidataResponseParser {
+
+    @Value(value = "${wikidata.uri.and.label.type}")
+    private String parserType;
 
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
         for (int i = 0; i < resultModel.getRowCount(); ++i) {
@@ -28,7 +32,7 @@ public class URIAndLabelParser implements WikidataResponseParser {
 
     @Override
     public String getType() {
-        return "uri-label";
+        return parserType;
     }
 
 }

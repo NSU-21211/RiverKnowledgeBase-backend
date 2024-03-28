@@ -4,6 +4,7 @@ import com.bordercloud.sparql.SparqlResultModel;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.WikidataResponseParser;
 import nsu.ccfit.ru.upprpo.riverknowledge.util.RiverPairKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -13,6 +14,9 @@ import java.util.Map;
 
 @Component
 public class LengthAndOriginParser implements WikidataResponseParser {
+
+    @Value(value = "${wikidata.length.and.origin.type")
+    private String parserType;
 
     @Override
     public void parse(SparqlResultModel resultModel, Map<RiverPairKey, RiverEntity> rivers) {
@@ -34,6 +38,6 @@ public class LengthAndOriginParser implements WikidataResponseParser {
 
     @Override
     public String getType() {
-        return "length-origin";
+        return parserType;
     }
 }

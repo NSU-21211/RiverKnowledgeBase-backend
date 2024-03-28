@@ -1,10 +1,14 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.impl;
 
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LengthAndOriginWikidataQuery implements WikidataQuery {
+
+    @Value(value = "${wikidata.length.and.origin.type}")
+    private String queryType;
 
     @Override
     public String getWikidataQuery(String name) {
@@ -29,7 +33,7 @@ public class LengthAndOriginWikidataQuery implements WikidataQuery {
 
     @Override
     public String getType() {
-        return "length-origin";
+        return queryType;
     }
 
 }
