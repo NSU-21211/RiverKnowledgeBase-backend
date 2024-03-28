@@ -10,11 +10,11 @@ import java.util.Set;
 @Setter
 public class RiverDTO {
     @Schema(description = "Название реки")
-    String label;
+    private String label;
 
     @Schema(description = "Административно-территориальные единицы на территории которых расположен данный элемент.")
-    Set<String> administrativeTerritorial;
+    private Set<String> administrativeTerritorial;
 
     @Schema(description = "Длина реки")
-    Integer length;
+    private Integer length;
 }
