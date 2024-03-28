@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class LengthAndOriginParser implements WikidataResponseParser {
 
-    @Value(value = "${wikidata.length.and.origin.type")
+    @Value(value = "${wikidata.length.and.origin.type}")
     private String parserType;
 
     @Override

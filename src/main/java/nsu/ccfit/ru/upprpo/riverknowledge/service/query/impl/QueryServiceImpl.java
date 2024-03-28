@@ -1,6 +1,9 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.service.query.impl;
 
-import com.bordercloud.sparql.*;
+import com.bordercloud.sparql.SparqlClient;
+import com.bordercloud.sparql.SparqlClientException;
+import com.bordercloud.sparql.SparqlResult;
+import com.bordercloud.sparql.SparqlResultModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsu.ccfit.ru.upprpo.riverknowledge.exception.SparqlQueryException;

@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info =
-            @Info( title = "Информационный сервис о реках",
-                    description = "Веб-платформа, созданная для сбора и предоставления информации о различных реках"
-            )
+        @Info(title = "Информационный сервис о реках",
+                description = "Веб-платформа, созданная для сбора и предоставления информации о различных реках"
+        )
 )
 @Configuration
 public class OpenApiConfig {

@@ -10,6 +10,10 @@ import java.util.Objects;
 public final class JTSUtil {
     private static final int ID_FOR_WGS_84 = 4326;
 
+    private JTSUtil() {
+        throw new IllegalStateException("Instantiation of util class");
+    }
+
     /**
      * Note: GeoJSON's order (longitude, latitude) must be converted to (latitude, longitude)
      *
@@ -58,9 +62,5 @@ public final class JTSUtil {
             return geometryFactory.createMultiLineString(lineStrings.toArray(new LineString[0]));
         }
         throw new IllegalArgumentException("Unsupported geometry type");
-    }
-
-    private JTSUtil() {
-        throw new IllegalStateException("Instantiation of util class");
     }
 }
