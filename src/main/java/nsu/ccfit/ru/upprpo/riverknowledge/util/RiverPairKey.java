@@ -11,8 +11,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 public class RiverPairKey {
-    URI link;
-    String label;
+    private URI link;
+    private String label;
 
     @Override
     public boolean equals(Object o) {
