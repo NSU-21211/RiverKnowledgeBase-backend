@@ -1,15 +1,14 @@
 package nsu.ccfit.ru.upprpo.riverknowledge.service.query.impl;
 
 import com.bordercloud.sparql.*;
-import com.bordercloud.sparql.authorization.basic.HTTPBasicAuthSettings;
-import com.bordercloud.sparql.authorization.oauth2.OAuth2PasswordGrantSettings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nsu.ccfit.ru.upprpo.riverknowledge.exception.SparqlQueryException;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.RiverEntity;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.WikidataResponseParser;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.parser.impl.URIAndLabelParser;
 import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.WikidataQuery;
-import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.impl.RiverURIAndLabelQuery;
+import nsu.ccfit.ru.upprpo.riverknowledge.model.wikidata.query.impl.URIAndLabelWikidataQuery;
 import nsu.ccfit.ru.upprpo.riverknowledge.service.query.QueryService;
 import nsu.ccfit.ru.upprpo.riverknowledge.util.RiverPairKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +38,7 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public void riverLabelAndURIQuery(String name, Map<RiverPairKey, RiverEntity> rivers) {
-        RiverURIAndLabelQuery query = new RiverURIAndLabelQuery();
+        URIAndLabelWikidataQuery query = new URIAndLabelWikidataQuery();
         String querySelect = query.getWikidataQuery(name);
 
         try {
@@ -56,7 +55,7 @@ public class QueryServiceImpl implements QueryService {
             }
         } catch (SparqlClientException e) {
             log.error("Error executing request SPARQL: {}", (Object) e.getSuppressed());
-            throw new RuntimeException(e);
+            throw new SparqlQueryException(e.getMessage());
         }
     }
 
@@ -69,8 +68,7 @@ public class QueryServiceImpl implements QueryService {
                 return client.get().query(querySelect);
             } catch (SparqlClientException e) {
                 log.error("Error executing request SPARQL for " + query.getType() + ": {}", e.getMessage());
-                e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new SparqlQueryException(e.getMessage());
             }
         }).thenAccept(result -> {
             SparqlResultModel resultModel = result.getModel();
@@ -78,13 +76,11 @@ public class QueryServiceImpl implements QueryService {
 
             if (resultModel.getRowCount() > 0) {
                 Optional<WikidataResponseParser> parser = getParserByType(query.getType());
-                if (parser.isPresent()) {
-                    parser.get().parse(resultModel, rivers);
-                    log.info(parser.get().getType() + " parse has finished. Rivers size = " + rivers.size());
+                parser.ifPresentOrElse(p -> {
+                    p.parse(resultModel, rivers);
+                    log.info(p.getType() + " parse has finished. Rivers size = " + rivers.size());
                     client.remove();
-                } else {
-                    log.error("No parser for " + query.getType() + " query");
-                }
+                }, () -> log.error("No parser for " + query.getType() + " query"));
             } else {
                 log.warn("No information query" + query.getType() + " river " + name);
             }
