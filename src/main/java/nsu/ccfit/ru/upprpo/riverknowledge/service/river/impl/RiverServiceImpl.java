@@ -29,16 +29,17 @@ public class RiverServiceImpl implements RiverService {
 
     @Override
     public List<RiverDTO> getRiverInfo(String name) {
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
         queryService.riverLabelAndURIQuery(name, rivers);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (WikidataQuery query : wikidataQueryList) {
             CompletableFuture<Void> future = queryService.executeQuery(name, rivers, query);
             futures.add(future);
         }
 
-        CompletableFuture<Void> allDone = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        allDone.join();
+        for (CompletableFuture<Void> future : futures) {
+            future.join();
+        }
 
         return rivers.values().stream()
                 .map(entity -> mapper.map(entity, RiverDTO.class))
