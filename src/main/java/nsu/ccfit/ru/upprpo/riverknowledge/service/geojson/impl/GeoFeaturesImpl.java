@@ -11,7 +11,10 @@ import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.geojson.result.DistancesF
 import nsu.ccfit.ru.upprpo.riverknowledge.model.entity.geojson.result.GeoServiceResult;
 import nsu.ccfit.ru.upprpo.riverknowledge.service.geojson.GeoFeaturesService;
 import nsu.ccfit.ru.upprpo.riverknowledge.util.JTSUtil;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
